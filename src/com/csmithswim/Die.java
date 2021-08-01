@@ -1,18 +1,22 @@
 package com.csmithswim;
 
+import java.util.Random;
+
 public class Die {
-    public int numberOfSides;
-    public int faceUpValue;
+    public int sides=6;
+    public int value=1;
 
     public Die() {
-        numberOfSides = 6;
+        sides = 6;
+        value = 1;
     }
 
-    public Die(int numberOfSides) {
-        this.numberOfSides = numberOfSides;
+    public void roll(Random rand){
+        value = rand.nextInt(sides) +1;
     }
 
-    public void roll() {
-        faceUpValue = (int) ((Math.random() * numberOfSides) + 1);
+    public int getValue(){
+        return value;
     }
+
 }
