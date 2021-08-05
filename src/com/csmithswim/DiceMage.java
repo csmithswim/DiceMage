@@ -31,11 +31,11 @@ public class DiceMage {
         }
         int currentPlayer = 0;
         while (game) {
-            System.out.println(players.get(currentPlayer).getName() + ", enter 'r' to roll");
+            System.out.println(players.get(currentPlayer).getName() + ", enter 'roll' to roll");
             Scanner scanner = new Scanner(System.in);
             try {
-                char beginGame = scanner.next().charAt(0);
-                if (beginGame != 'r') {
+                String beginGame = scanner.nextLine();
+                if (!beginGame.equals("roll")) {
                     continue;
                 }
 
@@ -48,42 +48,50 @@ public class DiceMage {
                         "Level: " +  players.get(currentPlayer).energy.size() +
                         "\nGolem level : " + players.get(currentPlayer).golemLevel + "\n\n");
 
+
+                //Power up, create monster, monster attack, skip turn.
+
+                if (players.get(currentPlayer).golemLevel > 0 ) {
+                    System.out.println("Enter 'attack' to attack");
+                }
                 if (players.get(currentPlayer).energy.mana >= 6) {
-                    System.out.println("Enter 1 to to buy a level " + players.get(currentPlayer).energy.mana /3+  " golem for " + players.get(currentPlayer).energy.mana/3 + " " +
+                    System.out.println("Enter 'spawn golem' to to buy a level " + players.get(currentPlayer).energy.mana /3+  " golem for " + players.get(currentPlayer).energy.mana/3 +
+                            " " +
                             "mana?");
                 }
                 if (players.get(currentPlayer).energy.mana >= 8) {
-                    System.out.println("Enter 2 to power up.");
+                    System.out.println("Enter 'power up' to power up.");
                 }
                 if (players.get(currentPlayer).energy.mana < 6) {
-                    System.out.println("You do not have enough mana to do anything, type 's' to skip turn");
+                    System.out.println("You do not have enough mana to do anything, type 'skip' to skip turn");
                 }
 
                 do {
                     String input = scanner.nextLine();
-                    if (input.equals("2")) {
+                    if (input.equals("power up".trim().toLowerCase())) {
                         players.get(currentPlayer).energy.powerUp();
                         break;
                     }
-                    if (input.equals("1")) {
+                    if (input.equals("spawn golem".trim().toLowerCase())) {
                         players.get(currentPlayer).createGolem(players.get(currentPlayer).energy.mana);
                         break;
                     }
-                    if (input.equals("s")) {
+                    if (input.equals("skip".trim().toLowerCase())) {
                         break;
                     }
-                    if (input.equals("3")) {
-                        if (players.get(1).golemLevel == 0) {
-                            System.out.println("Player " + players.get(currentPlayer).name + "'s level " + players.get(currentPlayer).golemLevel + "golem attacked " + players.get(0).name);
-                            players.get(0).health = players.get(currentPlayer).golemAttack(players.get(currentPlayer).golemLevel) - players.get(1).health;
-                            System.out.println(players.get(1).getName() + "lost " + players.get(currentPlayer).golemAttack(players.get(currentPlayer).golemLevel) + " health.");
-                            break;
-                        }
-//                                players.get(currentPlayer).golemAttack(players.get(currentPlayer).golemLevel);
+                    if (input.equals("attack".trim().toLowerCase())) {
+                        calculateVictor();
+                        break;
                     }
                 } while (true);
 
                 currentPlayer = Math.abs(currentPlayer - 1);
+
+                if (players.get(currentPlayer).health <= 0 || players.get(Math.abs(currentPlayer-1)).health <= 0) {
+                    System.out.println(players.get(currentPlayer).health <= 0 ? players.get(Math.abs(currentPlayer-1)).getName() + " wins!" :
+                            players.get((currentPlayer)).getName() + " wins!");
+                    break;
+                }
                 continue;
             } catch (InputMismatchException e) {
                 System.out.println("You can only enter 'roll' to roll energy dice!\n\n");
@@ -92,7 +100,33 @@ public class DiceMage {
             System.out.println("\n \n \n");
     }
 
+
+
+
+    public void calculateVictor() {
+
+        int currentPlayersAttack = players.get(currentPlayer).golemAttack(players.get(currentPlayer).golemLevel);
+        int opposingPlayersAttack = players.get(Math.abs(currentPlayer - 1)).golemAttack(players.get(Math.abs(currentPlayer - 1)).golemLevel);
+
+        System.out.println(currentPlayersAttack > opposingPlayersAttack ?
+                players.get(currentPlayer).getName() + " wins the battle and inflects " + currentPlayersAttack + " damage to " + players.get(Math.abs(currentPlayer - 1)).getName() :
+                players.get(Math.abs(currentPlayer - 1)).getName() + " wins the battle and inflects " + currentPlayersAttack + " damage to " + players.get(currentPlayer).getName());
+
+        if (currentPlayersAttack > opposingPlayersAttack) {
+            players.get(Math.abs(currentPlayer - 1)).health = players.get(Math.abs(currentPlayer - 1)).health - currentPlayersAttack;
+        } else if (currentPlayersAttack == opposingPlayersAttack) {
+
+            System.out.println("Draw!");
+        } else {
+            players.get(currentPlayer).health = players.get(currentPlayer).health - currentPlayersAttack;
+        }
+    }
 }
+
+
+
+
+
 
 
 

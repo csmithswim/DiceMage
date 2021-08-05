@@ -1,13 +1,12 @@
 package com.csmithswim;
 
-import java.util.Random;
-
 public class Player {
     //Declarations of deck and player's name
     public Energy energy;
     public String name;
     public int health;
     public int golemLevel;
+    Den den = new Den();
     Console console = new Console();
 
     //Constructor
@@ -16,6 +15,7 @@ public class Player {
         this.health = 21;
         energy = new Energy(6);
         golemLevel = 0;
+        this.den = den;
     }
 
     //Shuffle/roll the dice/deck
