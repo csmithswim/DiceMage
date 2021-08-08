@@ -3,15 +3,16 @@ package com.csmithswim;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Graveyard {
-
     List<Skeleton> army = new ArrayList<>();
 
     public void createSkeleton(int level) {
         Skeleton skeleton = new Skeleton(level);
         army.add(skeleton);
 
+        //To sort skeletons in descending order
         for (int i = 0; i < army.size(); i++) {
             for (int j = 0; j < army.size(); j++) {
 
@@ -30,7 +31,6 @@ public class Graveyard {
     }
 
 
-
     public void displayArmy() {
             String output = "|";
             for (var skeleton : army) {
@@ -45,10 +45,5 @@ public class Graveyard {
             i++;
         }
     }
-
-
-
-
-
 }
 

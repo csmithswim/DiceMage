@@ -38,13 +38,13 @@ public class DiceMage {
                     continue;
                 }
 
-        players.get(currentPlayer).energy.mana++;
-        players.get(currentPlayer).energy.energyRoll();
+                players.get(currentPlayer).energy.mana++;
+                players.get(currentPlayer).energy.energyRoll();
 
                 System.out.println(players.get(currentPlayer).getName() + "'s energy roll");
                 players.get(currentPlayer).displayEnergy();
                 System.out.println(players.get(currentPlayer).getName() + "'s Health: " + players.get(currentPlayer).health + "\nMana: " + players.get(currentPlayer).energy.mana + "\nEnergy " +
-                        "Level: " +  players.get(currentPlayer).energy.size() +
+                        "Level: " + players.get(currentPlayer).energy.size() +
                         "\nSkeleton army size : " + players.get(currentPlayer).graveyard.army.size() + "\n\n");
 
 
@@ -59,7 +59,7 @@ public class DiceMage {
                 if (players.get(currentPlayer).energy.mana < 6) {
                     System.out.println("You do not have enough mana to do anything, type 'skip' to skip turn");
                 }
-                if (players.get(currentPlayer).graveyard.army.size() > 0 ) {
+                if (players.get(currentPlayer).graveyard.army.size() > 0) {
                     System.out.println("Enter 'attack' to attack");
                 } else {
                     System.out.println("Enter 'skip' to skip turn");
@@ -73,23 +73,23 @@ public class DiceMage {
                     }
                     if (input.equals("raise dead".trim().toLowerCase())) {
 
-                    do {
-                        System.out.println("\nEnter which level of skeleton warrior you wish to create. Type 2 to end selection.");
-                        players.get(currentPlayer).graveyard.displaySkeletonChoices(players.get(currentPlayer).energy.mana);
-                        int selection = scanner.nextInt();
-                        if (selection == 2) {
-                            break;
-                        }
-                        if (players.get(currentPlayer).energy.mana / selection >=  2) {
-                        players.get(currentPlayer).graveyard.createSkeleton(selection);
-                        players.get(currentPlayer).energy.mana = players.get(currentPlayer).energy.mana - (selection * 2);
-                        } else {
-                            System.out.println("Sorry you do not have enough mana for that skeleton, try another selection.");
+                        do {
+                            System.out.println("\nEnter which level of skeleton warrior you wish to create. Type 2 to end selection.");
+                            players.get(currentPlayer).graveyard.displaySkeletonChoices(players.get(currentPlayer).energy.mana);
+                            int selection = scanner.nextInt();
+                            if (selection == 2) {
+                                break;
+                            }
+                            if (players.get(currentPlayer).energy.mana / selection >= 2) {
+                                players.get(currentPlayer).graveyard.createSkeleton(selection);
+                                players.get(currentPlayer).energy.mana = players.get(currentPlayer).energy.mana - (selection * 2);
+                            } else {
+                                System.out.println("Sorry you do not have enough mana for that skeleton, try another selection.");
 
-                        }
+                            }
 
-                    } while (true);
-                    break;
+                        } while (true);
+                        break;
                     }
 
                     if (input.equals("skip".trim().toLowerCase())) {
@@ -103,8 +103,8 @@ public class DiceMage {
 
                 currentPlayer = Math.abs(currentPlayer - 1);
 
-                if (players.get(currentPlayer).health <= 0 || players.get(Math.abs(currentPlayer-1)).health <= 0) {
-                    System.out.println(players.get(currentPlayer).health <= 0 ? players.get(Math.abs(currentPlayer-1)).getName() + " wins!" :
+                if (players.get(currentPlayer).health <= 0 || players.get(Math.abs(currentPlayer - 1)).health <= 0) {
+                    System.out.println(players.get(currentPlayer).health <= 0 ? players.get(Math.abs(currentPlayer - 1)).getName() + " wins!" :
                             players.get((currentPlayer)).getName() + " wins!");
                     break;
                 }
@@ -113,28 +113,70 @@ public class DiceMage {
                 System.out.println("You can only enter 'roll' to roll energy dice!\n\n");
             }
         }
-            System.out.println("\n \n \n");
+        System.out.println("\n \n \n");
     }
 
-
-
-    //
     public void calculateBattle() {
-        for(int i = 0 ; i < players.get(currentPlayer).graveyard.army.size() ; i++){
+        int playerOneArmy = players.get(currentPlayer).graveyard.army.size();
+        int playerTwoArmy = players.get(Math.abs(currentPlayer - 1)).graveyard.army.size();
+        String play1Name = players.get(currentPlayer).name;
+        String play2Name = players.get(Math.abs(currentPlayer - 1)).name;
+
+        if (playerOneArmy >= 1 && playerTwoArmy >= 1) {
+            while (playerOneArmy >= 0 || playerTwoArmy >= 0) {
+                for (int i = 0, j = 0; i < playerOneArmy && j < playerTwoArmy; i++, j++) {
+                    int playerOneAttackingSkeleton = (int) (players.get(currentPlayer).graveyard.army.get(i).level * Math.random() + 1);
+                    int playerTwoAttackingSkeleton = (int) (players.get(Math.abs(currentPlayer - 1)).graveyard.army.get(j).level * Math.random() + 1);
 
 
-            Skeleton skeleton = (Skeleton) players.get(currentPlayer).graveyard.army.get(i);
-            System.out.println(skeleton.level);
+                    if (playerOneAttackingSkeleton > playerTwoAttackingSkeleton) {
+                        System.out.println(play1Name + "'s level " + players.get(currentPlayer).graveyard.army.get(i).level + "wins and kills " + play2Name + "'s level " + players.get(Math.abs(currentPlayer - 1)).graveyard.army.get(j).level + " skeleton");
+                        players.get(Math.abs(currentPlayer - 1)).graveyard.army.remove(j);
+                        playerTwoArmy--;
+                        j--;
+                    } else if (playerOneAttackingSkeleton < playerTwoAttackingSkeleton) {
+                        System.out.println(play2Name + "'s level " + players.get(Math.abs(currentPlayer - 1)).graveyard.army.get(j).level + "wins and kills " + play1Name + "'s level " + players.get(currentPlayer).graveyard.army.get(i).level + " skeleton");
+                        players.get(currentPlayer).graveyard.army.remove(i);
+                        playerOneArmy--;
+                        i--;
+                    } else {
+                        System.out.println(playerOneAttackingSkeleton + " Draw " + playerTwoAttackingSkeleton);
+                        players.get(currentPlayer).graveyard.army.remove(i);
+                        players.get(Math.abs(currentPlayer - 1)).graveyard.army.remove(j);
+                        playerOneArmy--;
+                        playerTwoArmy--;
+                        i--;
+                        j--;
+                    }
+                }
+                System.out.println(playerOneArmy);
+                System.out.println(playerTwoArmy);
+                if (playerOneArmy == 0 || playerTwoArmy == 0) {
+                    break;
+                }
+            }
+        } else {
+            if (playerOneArmy == 0) {
+                int damage=0;
+                for (int i = 0; i  < playerTwoArmy; i++) {
+                    damage  += (int) (players.get(Math.abs(currentPlayer - 1)).graveyard.army.get(i).level * Math.random() + 1);
+                }
+                players.get(currentPlayer).health = players.get(currentPlayer).health - damage;
+                System.out.println(play2Name + " attacked " +  play1Name + " and dealt damage to them!");
+                System.out.println(players.get(currentPlayer).health);
+            }
+            if (playerTwoArmy == 0) {
+                int damage=0;
+                for (int i = 0; i  < playerOneArmy; i++) {
+                    damage  += (int) (players.get(currentPlayer).graveyard.army.get(i).level * Math.random() + 1);
+                }
+                players.get(Math.abs(currentPlayer-1)).health = players.get(Math.abs(currentPlayer-1)).health - damage;
+                System.out.println(play1Name + " attacked " +  play2Name + " and dealt damage to them!");
+                System.out.println(players.get(Math.abs(currentPlayer-1)).health);
+            }
         }
-
-        for(int i = 0 ; i < players.get(Math.abs(currentPlayer-1)).graveyard.army.size() ; i++){
-            Skeleton skeleton = (Skeleton) players.get(Math.abs(currentPlayer-1)).graveyard.army.get(i);
-            System.out.println(skeleton.level);
-        }
-
     }
 }
-
 
 
 
