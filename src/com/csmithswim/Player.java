@@ -5,8 +5,7 @@ public class Player {
     public Energy energy;
     public String name;
     public int health;
-    public int golemLevel;
-    Den den = new Den();
+    Graveyard graveyard = new Graveyard();
     Console console = new Console();
 
     //Constructor
@@ -14,29 +13,23 @@ public class Player {
         this.name = name;
         this.health = 21;
         energy = new Energy(6);
-        golemLevel = 0;
-        this.den = den;
+        this.graveyard = graveyard;
     }
 
     //Shuffle/roll the dice/deck
     public void roll() { energy.roll(); }
 
-    //create monster
-    public void createGolem(int mana) {
-       int level = mana/3;
-        Golem golem = new Golem(level);
-        golemLevel = level;
-        mana = 0;
-    }
-
     //monster attack
-    public int golemAttack(int level) {
+    public int attack(int level) {
        int attack = (int) ((Math.random() * level + 1));
        return attack;
     }
 
     //Display the deck/dice
     public void displayEnergy() { energy.peek(); }
+
+    //display army
+    public void displayArmy() { graveyard.displayArmy(); }
 
     //Display mana
     public void displayMana() { energy.peekMana(); }

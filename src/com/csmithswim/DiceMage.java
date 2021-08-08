@@ -23,7 +23,6 @@ public class DiceMage {
     public boolean turn = true;
     public int currentPlayer;
 
-
     public DiceMage() {
         players = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
@@ -46,24 +45,24 @@ public class DiceMage {
                 players.get(currentPlayer).displayEnergy();
                 System.out.println(players.get(currentPlayer).getName() + "'s Health: " + players.get(currentPlayer).health + "\nMana: " + players.get(currentPlayer).energy.mana + "\nEnergy " +
                         "Level: " +  players.get(currentPlayer).energy.size() +
-                        "\nGolem level : " + players.get(currentPlayer).golemLevel + "\n\n");
+                        "\nSkeleton army size : " + players.get(currentPlayer).graveyard.army.size() + "\n\n");
 
 
                 //Power up, create monster, monster attack, skip turn.
 
-                if (players.get(currentPlayer).golemLevel > 0 ) {
-                    System.out.println("Enter 'attack' to attack");
-                }
                 if (players.get(currentPlayer).energy.mana >= 6) {
-                    System.out.println("Enter 'spawn golem' to to buy a level " + players.get(currentPlayer).energy.mana /3+  " golem for " + players.get(currentPlayer).energy.mana/3 +
-                            " " +
-                            "mana?");
+                    System.out.println("Enter 'raise dead' to spawn a skeleton warrior");
                 }
                 if (players.get(currentPlayer).energy.mana >= 8) {
                     System.out.println("Enter 'power up' to power up.");
                 }
                 if (players.get(currentPlayer).energy.mana < 6) {
                     System.out.println("You do not have enough mana to do anything, type 'skip' to skip turn");
+                }
+                if (players.get(currentPlayer).graveyard.army.size() > 0 ) {
+                    System.out.println("Enter 'attack' to attack");
+                } else {
+                    System.out.println("Enter 'skip' to skip turn");
                 }
 
                 do {
@@ -72,15 +71,32 @@ public class DiceMage {
                         players.get(currentPlayer).energy.powerUp();
                         break;
                     }
-                    if (input.equals("spawn golem".trim().toLowerCase())) {
-                        players.get(currentPlayer).createGolem(players.get(currentPlayer).energy.mana);
-                        break;
+                    if (input.equals("raise dead".trim().toLowerCase())) {
+
+                    do {
+                        System.out.println("\nEnter which level of skeleton warrior you wish to create. Type 2 to end selection.");
+                        players.get(currentPlayer).graveyard.displaySkeletonChoices(players.get(currentPlayer).energy.mana);
+                        int selection = scanner.nextInt();
+                        if (selection == 2) {
+                            break;
+                        }
+                        if (players.get(currentPlayer).energy.mana / selection >=  2) {
+                        players.get(currentPlayer).graveyard.createSkeleton(selection);
+                        players.get(currentPlayer).energy.mana = players.get(currentPlayer).energy.mana - (selection * 2);
+                        } else {
+                            System.out.println("Sorry you do not have enough mana for that skeleton, try another selection.");
+
+                        }
+
+                    } while (true);
+                    break;
                     }
+
                     if (input.equals("skip".trim().toLowerCase())) {
                         break;
                     }
                     if (input.equals("attack".trim().toLowerCase())) {
-                        calculateVictor();
+                        calculateBattle();
                         break;
                     }
                 } while (true);
@@ -102,26 +118,23 @@ public class DiceMage {
 
 
 
+    //
+    public void calculateBattle() {
+        for(int i = 0 ; i < players.get(currentPlayer).graveyard.army.size() ; i++){
 
-    public void calculateVictor() {
 
-        int currentPlayersAttack = players.get(currentPlayer).golemAttack(players.get(currentPlayer).golemLevel);
-        int opposingPlayersAttack = players.get(Math.abs(currentPlayer - 1)).golemAttack(players.get(Math.abs(currentPlayer - 1)).golemLevel);
-
-        System.out.println(currentPlayersAttack > opposingPlayersAttack ?
-                players.get(currentPlayer).getName() + " wins the battle and inflects " + currentPlayersAttack + " damage to " + players.get(Math.abs(currentPlayer - 1)).getName() :
-                players.get(Math.abs(currentPlayer - 1)).getName() + " wins the battle and inflects " + currentPlayersAttack + " damage to " + players.get(currentPlayer).getName());
-
-        if (currentPlayersAttack > opposingPlayersAttack) {
-            players.get(Math.abs(currentPlayer - 1)).health = players.get(Math.abs(currentPlayer - 1)).health - currentPlayersAttack;
-        } else if (currentPlayersAttack == opposingPlayersAttack) {
-
-            System.out.println("Draw!");
-        } else {
-            players.get(currentPlayer).health = players.get(currentPlayer).health - currentPlayersAttack;
+            Skeleton skeleton = (Skeleton) players.get(currentPlayer).graveyard.army.get(i);
+            System.out.println(skeleton.level);
         }
+
+        for(int i = 0 ; i < players.get(Math.abs(currentPlayer-1)).graveyard.army.size() ; i++){
+            Skeleton skeleton = (Skeleton) players.get(Math.abs(currentPlayer-1)).graveyard.army.get(i);
+            System.out.println(skeleton.level);
+        }
+
     }
 }
+
 
 
 
