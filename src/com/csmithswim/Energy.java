@@ -7,7 +7,7 @@ public class Energy {
 
     public Energy(int diceNum) {
         energy = new ArrayList<>();
-        mana = 100;
+        mana = 9;
         for (int counter = 0; counter < diceNum; counter++) {
             energy.add(new Die());
         }
@@ -61,7 +61,7 @@ public class Energy {
 
     public void powerUp() {
         energy.add(0,new Die());
-        mana = 0;
+        mana = mana - 3;
     }
 
     public void peek() {

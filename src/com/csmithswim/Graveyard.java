@@ -10,6 +10,7 @@ public class Graveyard {
 
     public void createSkeleton(int level) {
         Skeleton skeleton = new Skeleton(level);
+        System.out.println("You raised a level " + level + " skeleton warrior!");
         army.add(skeleton);
 
         //To sort skeletons in descending order
@@ -27,23 +28,24 @@ public class Graveyard {
                 }
             }
         }
-        displayArmy();
     }
 
 
-    public void displayArmy() {
-            String output = "|";
+    public String displayArmy() {
+            String output = "";
             for (var skeleton : army) {
-                output += skeleton.level + "|";
+                output += " level " + skeleton.level + " |";
             }
-            System.out.println(output.trim()+"\n");
+           return output.trim()+"\n\n";
     }
 
     public void displaySkeletonChoices(int mana) {
-        for (int i = 6; i < mana; i++) {
-            System.out.println("Level " + i/2 + " skeleton costs " + i + " mana and has an attack of 1-" + i);
-            i++;
-        }
+        System.out.println("\n");
+            for (int i = 6; i <= mana; i++) {
+                System.out.println("Level          Mana Cost          Attack Range");
+                System.out.println(" " + i/2 + "               " + i + "                 1-" + i);
+                i++;
+            }
     }
 }
 
